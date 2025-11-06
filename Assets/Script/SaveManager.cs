@@ -1,4 +1,5 @@
 using UnityEngine;
+using System.Threading.Tasks;
 
 public class GameManager : MonoBehaviour
 {
@@ -6,37 +7,48 @@ public class GameManager : MonoBehaviour
     public int score;
     public string currentLevel = "Level_1";
 
-    private void Start()
+    private async void Start()
     {
-        LoadGame();
+        SaveData data = await SaveSystemREST.LoadGame();
+
+        player.position = new Vector3(data.X, data.Y, data.Z);
+        score = data.PlayerScore;
+        currentLevel = data.CurrentLevel;
     }
 
-    private void Update()
+    private async void Update()
     {
         if (Input.GetKeyDown(KeyCode.F5))
-            SaveGame();
+            await SaveGame();
 
         if (Input.GetKeyDown(KeyCode.F9))
-            LoadGame();
+            await LoadGame();
     }
 
-    public void SaveGame()
+    public async Task SaveGame()
     {
         SaveData data = new SaveData
         {
-            playerPosition = player.position,
-            playerScore = score,
-            currentLevel = currentLevel
+            X = player.position.x,
+            Y = player.position.y,
+            Z = player.position.z,
+            PlayerScore = score,
+            CurrentLevel = currentLevel
         };
 
-        SaveSystem.SaveGame(data);
+        await SaveSystemREST.SaveGame(data);
+
+        return;
     }
 
-    public void LoadGame()
+    public async Task LoadGame()
     {
-        SaveData data = SaveSystem.LoadGame();
-        player.position = data.playerPosition;
-        score = data.playerScore;
-        currentLevel = data.currentLevel;
+        SaveData data = await SaveSystemREST.LoadGame();
+
+        player.position = new Vector3(data.X, data.Y, data.Z);
+        score = data.PlayerScore;
+        currentLevel = data.CurrentLevel;
+
+        return;
     }
 }

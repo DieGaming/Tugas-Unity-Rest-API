@@ -4,9 +4,11 @@ using UnityEngine;
 [Serializable]
 public class SaveData
 {
-    public Vector3 playerPosition;
-    public int playerScore;
-    public string currentLevel;
+    public float X;
+    public float Y;
+    public float Z;
 
-    // Add more fields here (e.g., inventory, stats)
+    public int PlayerScore;
+    public string CurrentLevel;
+    // Add more fields here (e.g., inventory,ï¿½stats)
 }
